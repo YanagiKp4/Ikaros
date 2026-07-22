@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
 from apps.backend.app.db.supabase import supabase
-from apps.backend.app.schemas.profile import ProfileCreate
 
 router = APIRouter()
 
@@ -32,20 +31,3 @@ def database_health():
             "detail": str(e)
         }
 
-@router.post("/profiles", tags=["Profiles"])
-def create_profile(profile: ProfileCreate):
-
-    data = {
-        "email": profile.email,
-        "full_name": profile.full_name,
-        "avatar_url": profile.avatar_url,
-    }
-
-    response = (
-        supabase
-        .table("profiles")
-        .insert(data)
-        .execute()
-    )
-
-    return response.data

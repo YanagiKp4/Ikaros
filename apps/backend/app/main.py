@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from apps.backend.app.db.supabase import supabase
 from apps.backend.app.routers.health import router as health_router
+from apps.backend.app.routers.profiles import router as profiles_router
 
 app = FastAPI(
     title="IKAROS API",
@@ -10,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(profiles_router)
 
 
 @app.get("/")
