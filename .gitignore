@@ -1,0 +1,35 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Variables de entorno
+.env
+
+# VS Code
+.vscode/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Cobertura
+.coverage
+htmlcov/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
