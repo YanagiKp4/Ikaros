@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from apps.backend.app.db.supabase import supabase
 from apps.backend.app.routers.health import router as health_router
 
 app = FastAPI(
