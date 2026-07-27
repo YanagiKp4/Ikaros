@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from apps.backend.app.schemas.profile import ProfileCreate, ProfileUpdate
 from apps.backend.app.services.profile_service import (
@@ -9,11 +9,16 @@ from apps.backend.app.services.profile_service import (
     update_profile,
 )
 
+from apps.backend.app.core.security import get_current_user
+
 router = APIRouter()
 
 
 @router.get("/profiles", tags=["Profiles"])
-def read_profiles():
+def read_profiles(
+    current_user=Depends(get_current_user)
+):
+
     return get_profiles()
 
 
