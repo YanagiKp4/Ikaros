@@ -1,12 +1,13 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict
 
 
 class ProfileCreate(BaseModel):
-    email: EmailStr
-    full_name: str
+    model_config = ConfigDict(extra="forbid")
+
     avatar_url: str | None = None
 
+
 class ProfileUpdate(BaseModel):
-    email: EmailStr
-    full_name: str
-    avatar_url: str | None = None    
+    model_config = ConfigDict(extra="forbid")
+
+    avatar_url: str | None = None

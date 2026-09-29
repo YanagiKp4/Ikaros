@@ -6,7 +6,6 @@ from apps.backend.app.services.auth_service import (
     register_user,
     login_user,
 )
-from apps.backend.app.core.security import verify_token
 
 router = APIRouter()
 
@@ -26,5 +25,9 @@ def verify(current_user=Depends(get_current_user)):
 
     return {
         "success": True,
-        "payload": current_user
+        "payload": {
+            "id": current_user["id"],
+            "email": current_user["email"],
+            "full_name": current_user["full_name"],
+        }
     }

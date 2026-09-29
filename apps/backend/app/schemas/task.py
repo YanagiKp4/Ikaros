@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TaskPriority(str, Enum):
@@ -16,7 +16,8 @@ class TaskStatus(str, Enum):
     completed = "completed"
 
 
-class TaskCreate(BaseModel):
+class TaskBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
     title: str = Field(
         min_length=3,
@@ -28,12 +29,19 @@ class TaskCreate(BaseModel):
         max_length=500
     )
 
+    status: TaskStatus = TaskStatus.pending
+
     priority: TaskPriority = TaskPriority.medium
 
     due_date: Optional[datetime] = None
 
 
+class TaskCreate(TaskBase):
+    pass
+
+
 class TaskUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
     title: Optional[str] = Field(
         default=None,

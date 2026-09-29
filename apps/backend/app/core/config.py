@@ -4,6 +4,6 @@ import os
 # Cargar variables del archivo .env
 load_dotenv()
 
-# Configuración de Supabase
+# Configuración pública de Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_PUBLIC_KEY = os.getenv("SUPABASE_PUBLIC_KEY")
