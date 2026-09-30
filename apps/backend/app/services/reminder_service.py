@@ -105,6 +105,7 @@ def create_reminder(
     data = jsonable_encoder(reminder)
     _validate_task_ownership(client, data["task_id"], user_id)
     data["user_id"] = user_id
+    data["status"] = ReminderStatus.pending.value
 
     try:
         response = (
@@ -183,6 +184,7 @@ def update_reminder(
             .update(data)
             .eq("id", reminder_id)
             .eq("user_id", user_id)
+            .eq("status", ReminderStatus.pending.value)
             .select("*")
             .execute()
         )

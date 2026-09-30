@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -25,7 +26,6 @@ class ReminderCreate(BaseModel):
 
     task_id: UUID
     remind_at: datetime
-    status: ReminderStatus = ReminderStatus.pending
     channel: ReminderChannel = ReminderChannel.in_app
 
 
@@ -40,7 +40,7 @@ class ReminderUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     remind_at: datetime = None
-    status: ReminderStatus = None
+    status: Literal["cancelled"] = None
     channel: ReminderChannel = None
 
 
