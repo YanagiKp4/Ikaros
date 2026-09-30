@@ -5,9 +5,11 @@ from apps.backend.app.schemas.reminder import (
     ReminderCreate,
     ReminderResponse,
     ReminderUpdate,
+    TaskReminderCreate,
 )
 from apps.backend.app.services.reminder_service import (
     create_reminder,
+    create_reminder_for_task,
     delete_reminder,
     get_reminder_by_id,
     get_reminders,
@@ -60,6 +62,25 @@ def add_reminder(
 ):
     return create_reminder(
         current_user["client"],
+        reminder,
+        current_user["id"]
+    )
+
+
+@router.post(
+    "/tasks/{task_id}/reminders",
+    tags=["Reminders"],
+    response_model=ReminderResponse,
+    status_code=status.HTTP_201_CREATED
+)
+def add_task_reminder(
+    task_id: str,
+    reminder: TaskReminderCreate,
+    current_user=Depends(get_current_user)
+):
+    return create_reminder_for_task(
+        current_user["client"],
+        task_id,
         reminder,
         current_user["id"]
     )

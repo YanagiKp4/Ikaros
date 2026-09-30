@@ -3,7 +3,12 @@ from fastapi.encoders import jsonable_encoder
 from postgrest import APIError
 from supabase import Client
 
-from apps.backend.app.schemas.reminder import ReminderCreate, ReminderUpdate
+from apps.backend.app.schemas.reminder import (
+    ReminderCreate,
+    ReminderStatus,
+    ReminderUpdate,
+    TaskReminderCreate,
+)
 
 
 def _raise_database_error(error: APIError):
@@ -72,13 +77,67 @@ def get_reminder_by_id(
     return response.data[0]
 
 
+def _validate_task_ownership(client: Client, task_id: str, user_id: str):
+    try:
+        response = (
+            client
+            .table("tasks")
+            .select("id")
+            .eq("id", task_id)
+            .eq("user_id", user_id)
+            .execute()
+        )
+    except APIError as error:
+        _raise_database_error(error)
+
+    if not response.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found"
+        )
+
+
 def create_reminder(
     client: Client,
     reminder: ReminderCreate,
     user_id: str
 ):
     data = jsonable_encoder(reminder)
+    _validate_task_ownership(client, data["task_id"], user_id)
     data["user_id"] = user_id
+
+    try:
+        response = (
+            client
+            .table("reminders")
+            .insert(data)
+            .select("*")
+            .execute()
+        )
+    except APIError as error:
+        _raise_database_error(error)
+
+    if not response.data:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Supabase no devolvió el recordatorio creado"
+        )
+
+    return response.data[0]
+
+
+def create_reminder_for_task(
+    client: Client,
+    task_id: str,
+    reminder: TaskReminderCreate,
+    user_id: str
+):
+    _validate_task_ownership(client, task_id, user_id)
+
+    data = jsonable_encoder(reminder)
+    data["task_id"] = task_id
+    data["user_id"] = user_id
+    data["status"] = ReminderStatus.pending.value
 
     try:
         response = (

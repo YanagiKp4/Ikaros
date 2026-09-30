@@ -29,6 +29,13 @@ class ReminderCreate(BaseModel):
     channel: ReminderChannel = ReminderChannel.in_app
 
 
+class TaskReminderCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    remind_at: datetime
+    channel: ReminderChannel = ReminderChannel.in_app
+
+
 class ReminderUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
