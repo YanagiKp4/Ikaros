@@ -1,3 +1,4 @@
+import math
 import os
 from pathlib import Path
 
@@ -22,7 +23,7 @@ def _positive_float(name: str, default: str) -> float:
     except ValueError as error:
         raise RuntimeError(f"{name} must be a positive number") from error
 
-    if value <= 0:
+    if not math.isfinite(value) or value <= 0:
         raise RuntimeError(f"{name} must be a positive number")
 
     return value
@@ -43,7 +44,7 @@ def _positive_int(name: str, default: str) -> int:
 
 SUPABASE_URL = _require_env("SUPABASE_URL")
 SUPABASE_PUBLIC_KEY = _require_env("SUPABASE_PUBLIC_KEY")
-SUPABASE_WORKER_KEY = _require_env("SUPABASE_WORKER_KEY")
+SUPABASE_WORKER_KEY = os.getenv("SUPABASE_WORKER_KEY")
 
 REMINDER_WORKER_INTERVAL_SECONDS = _positive_float(
     "REMINDER_WORKER_INTERVAL_SECONDS",

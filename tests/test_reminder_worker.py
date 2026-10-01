@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 from unittest.mock import Mock
 
+import pytest
+
 from apps.backend.app.workers import reminder_processor, reminder_worker
 from apps.backend.app.workers.reminder_processor import ReminderProcessor
 
@@ -177,6 +179,16 @@ def test_create_worker_client_uses_privileged_worker_configuration(
         reminder_processor.SUPABASE_URL,
         reminder_processor.SUPABASE_WORKER_KEY,
     )
+
+
+def test_create_worker_client_requires_worker_key(monkeypatch):
+    monkeypatch.setattr(reminder_processor, "SUPABASE_WORKER_KEY", None)
+
+    with pytest.raises(
+        RuntimeError,
+        match="SUPABASE_WORKER_KEY is required to run the reminder worker",
+    ):
+        reminder_processor.create_worker_client()
 
 
 def test_worker_loop_runs_one_controlled_cycle_and_shuts_down(
